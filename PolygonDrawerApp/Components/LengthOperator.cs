@@ -33,7 +33,11 @@ namespace PolygonDrawerApp.Components
         public bool Lock
         {
             get => button.Lock;
-            set => button.Lock = value;
+            set 
+            {
+                button.Lock = value;
+                numeric.Enabled = !value;
+            }
         }
 
         public event Action<bool> OnLengthLockChanged;
