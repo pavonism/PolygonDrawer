@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapeSketcher", "ShapeSketcher\ShapeSketcher.csproj", "{90096777-02C1-42E0-9689-F4156FA036E3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolygonDrawerApp", "PolygonDrawerApp\PolygonDrawerApp.csproj", "{D8A1E26E-434A-4657-98C7-9C7B90D08F5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polygons", "Polygons\Polygons.csproj", "{645F59DF-ACAB-4E43-8386-EE0B73BD7E6C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{90096777-02C1-42E0-9689-F4156FA036E3} = {90096777-02C1-42E0-9689-F4156FA036E3}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90096777-02C1-42E0-9689-F4156FA036E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90096777-02C1-42E0-9689-F4156FA036E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90096777-02C1-42E0-9689-F4156FA036E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90096777-02C1-42E0-9689-F4156FA036E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8A1E26E-434A-4657-98C7-9C7B90D08F5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8A1E26E-434A-4657-98C7-9C7B90D08F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8A1E26E-434A-4657-98C7-9C7B90D08F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8A1E26E-434A-4657-98C7-9C7B90D08F5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{645F59DF-ACAB-4E43-8386-EE0B73BD7E6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{645F59DF-ACAB-4E43-8386-EE0B73BD7E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{645F59DF-ACAB-4E43-8386-EE0B73BD7E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{645F59DF-ACAB-4E43-8386-EE0B73BD7E6C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C194146-6062-44CC-ACA9-FBC6484A14BF}
+	EndGlobalSection
+EndGlobal
