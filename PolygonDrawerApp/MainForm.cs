@@ -53,6 +53,7 @@ namespace PolygonDrawer
         private void InitializeToolbar()
         {
             this.toolbar.AddLabel(Resources.ProgramTitle);
+            this.toolbar.AddDivider();
             this.toolbar.AddTool(NormalModeHandler, Resources.DrawingModeGlyph, Resources.DrawingModeText);
             this.toolbar.AddTool(PerpendicularHandler, ConstraintSymbols.Perpendicular, Resources.PerpendicularModeText);
             this.toolbar.AddDivider();

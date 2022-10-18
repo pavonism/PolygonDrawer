@@ -5,6 +5,9 @@ using Polygons.Visitors;
 
 namespace PolygonDrawerApp.ShapeVisitors
 {
+    /// <summary>
+    /// Ustawia ograniczenie na długość krawędzi
+    /// </summary>
     public class ConstLengthSetter : PolygonVisitor
     {
         private readonly float? fixedLength;

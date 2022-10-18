@@ -15,20 +15,29 @@ namespace PolygonDrawerApp.Components
     /// </summary>
     public class LengthOperator : Toolbar
     {
-        private const int visiblePresicion = 2;
+        private const decimal MinimumValue = 1;
+        private const int VisiblePresicion = 2;
+        private const int ControlSize = 3 * FormConstants.MinimumControlSize;
+        private const int NumericPaddingLeftRight = 8;
 
-        private OptionButton button;
-        private NumericUpDown numeric = new()
+        #region Fields and Properties
+        private readonly OptionButton button;
+        private readonly NumericUpDown numeric = new()
         {
-            Width = 3 * FormConstants.MinimumControlSize,
+            Width = ControlSize,
             AutoSize = false,
             BorderStyle = BorderStyle.FixedSingle,
-            DecimalPlaces = visiblePresicion,
+            DecimalPlaces = VisiblePresicion,
             TextAlign = HorizontalAlignment.Center,
             Maximum = decimal.MaxValue,
-            Minimum = 1,
+            Minimum = MinimumValue,
         };
 
+        public decimal Value
+        {
+            get => numeric.Value;
+            set => numeric.Value = value;
+        }
 
         public bool Lock
         {
@@ -39,30 +48,13 @@ namespace PolygonDrawerApp.Components
                 numeric.Enabled = !value;
             }
         }
+        #endregion
 
-        public event Action<bool> OnLengthLockChanged;
-        public event Action<float> OnLengthChanged;
+        #region Events
+        public event Action<bool>? OnLengthLockChanged;
+        public event Action<float>? OnLengthChanged;
 
-
-        public decimal Value
-        {
-            get => numeric.Value;
-            set => numeric.Value = value;
-        }
-
-        public LengthOperator()
-        {
-            Margin = Padding.Empty;
-            AddDivider();
-            numeric.Margin = new Padding(8, (32 - numeric.Height) / 2, 0, (32 - numeric.Height) / 2);
-            button = AddTool(LockChanged, ConstraintSymbols.ConstLength, Resources.LengthConstraintText);
-            button.Margin = Padding.Empty;
-            Controls.Add(numeric);
-            AddDivider();
-            numeric.ValueChanged += Numeric_ValueChanged;
-        }
-
-        private void Numeric_ValueChanged(object? sender, EventArgs e)
+        private void NumericValueChanged(object? sender, EventArgs e)
         {
             OnLengthChanged?.Invoke((float)numeric.Value);
         }
@@ -71,6 +63,22 @@ namespace PolygonDrawerApp.Components
         {
             numeric.Enabled = !newValue;
             OnLengthLockChanged?.Invoke(newValue);
+        }
+        #endregion
+
+        public LengthOperator()
+        {
+            Margin = Padding.Empty;
+            numeric.Margin = new Padding(
+                NumericPaddingLeftRight, (FormConstants.MinimumControlSize - numeric.Height) / 2,
+                NumericPaddingLeftRight, (FormConstants.MinimumControlSize - numeric.Height) / 2);
+            numeric.ValueChanged += NumericValueChanged;
+
+            AddDivider();
+            button = AddTool(LockChanged, ConstraintSymbols.ConstLength, Resources.LengthConstraintText);
+            button.Margin = Padding.Empty;
+            Controls.Add(numeric);
+            AddDivider();
         }
     }
 }

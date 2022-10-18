@@ -30,7 +30,11 @@ namespace PolygonDrawerApp.Components
             };
 
             Controls.Add(label);
-            AddDivider();
+        }
+
+        public void AddDivider()
+        {
+            Controls.Add(new Divider());
         }
 
         public OptionButton AddTool(Action<bool> handler, string glyph, string toolTip)
@@ -39,15 +43,12 @@ namespace PolygonDrawerApp.Components
 
             var button = new OptionButton()
             {
-                Width = 32,
-                Height = 32,
+                Width = FormConstants.MinimumControlSize,
+                Height = FormConstants.MinimumControlSize,
                 Margin = new Padding(2, 0, 2, 0),
                 Text = glyph,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Font = new Font("Arial", 14, FontStyle.Bold),
-                BackColor = Color.Transparent,
-                ForeColor = Color.Black,
-                FlatStyle = FlatStyle.Flat,
             };
 
             button.FlatAppearance.BorderSize = 0;
@@ -71,11 +72,6 @@ namespace PolygonDrawerApp.Components
             checkBox.CheckedChanged += onOptionChanged;
             Controls.Add(checkBox);
             return checkBox;
-        }
-
-        public void AddDivider()
-        {
-            Controls.Add(new Divider());
         }
     }
 }

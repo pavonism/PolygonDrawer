@@ -2,9 +2,12 @@
 
 namespace PolygonDrawerApp.Components
 {
+    /// <summary>
+    /// Implementuje okrągły przycisk w formie checkboxa
+    /// </summary>
     public class OptionButton : Button
     {
-        public event Action<bool>? OnOptionChanged;
+        #region Fields and Properties
         private bool ticked;
 
         public bool Lock
@@ -16,11 +19,10 @@ namespace PolygonDrawerApp.Components
                 BackColor = value ? Color.LightGray : Color.Transparent;
             }
         }
+        #endregion
 
-        public OptionButton()
-        {
-            this.Click += OptionChanged;
-        }
+        #region Events
+        public event Action<bool>? OnOptionChanged;
 
         private void OptionChanged(object? sender, EventArgs e)
         {
@@ -40,6 +42,15 @@ namespace PolygonDrawerApp.Components
 
 
             base.OnPaint(pevent);
+        }
+        #endregion
+
+        public OptionButton()
+        {
+            BackColor = Color.Transparent;
+            ForeColor = Color.Black;
+            FlatStyle = FlatStyle.Flat;
+            this.Click += OptionChanged;
         }
     }
 }

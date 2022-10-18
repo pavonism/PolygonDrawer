@@ -4,6 +4,9 @@ using Polygons.Visitors;
 
 namespace PolygonDrawerApp.ShapeVisitors
 {
+    /// <summary>
+    /// Ustawia długość krawędzi
+    /// </summary>
     public class LengthSetter : PolygonVisitor
     {
         private float length;

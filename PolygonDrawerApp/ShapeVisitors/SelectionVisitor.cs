@@ -4,6 +4,9 @@ using Polygons.Visitors;
 
 namespace PolygonDrawerApp.ShapeVisitors
 {
+    /// <summary>
+    /// Zmienia dostępne narzędzia w zależności od wybranego kształtu
+    /// </summary>
     public class SelectionVisitor : IPolygonVisitor
     {
         private readonly LengthOperator lengthOperator;
