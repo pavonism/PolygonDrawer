@@ -4,6 +4,8 @@ namespace ShapeSketcher
 {
     public class ShapeSketcher<ShapeType> : PictureBox where ShapeType : IRenderableShape
     {
+        private const int ClickRadius = 2;
+
         #region Fields and Properties
         private Bitmap drawingContext;
         private IShapeComposer<ShapeType> shapeComposer;
@@ -76,8 +78,9 @@ namespace ShapeSketcher
         {
             isClicked = false;
             PointF mousePoint = new(e.X, e.Y);
+            PointF diff = lastClickPoint.Minus(mousePoint);
 
-            if (isDragged == false)
+            if (isDragged == false && diff.X <= ClickRadius && diff.Y <= ClickRadius)
             {
                 switch (ControlMode)
                 {

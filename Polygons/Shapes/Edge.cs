@@ -41,6 +41,7 @@ namespace Polygons.Shapes
                 from?.DeattachEdge(this);
                 from = value;
                 from?.AttachEdge(this);
+                CheckConstraints(From);
             }
         }
 
@@ -53,13 +54,14 @@ namespace Polygons.Shapes
                 to?.DeattachEdge(this);
                 to = value;
                 to?.AttachEdge(this);
+                CheckConstraints(To);
             }
         }
 
         public PointF Center => new PointF((To.X + From.X) / 2, (To.Y + From.Y) / 2);
 
         private bool isSelected;
-        public bool Lock { get; set; }
+        public bool ConstraintLock { get; set; }
         public event Action<IPolygonShape> OnShapeDelete;
         public event OnEdgeDelete? OnEdgeDelete;
         public event Action<Edge, PointF>? OnVertexAdd;
@@ -129,18 +131,28 @@ namespace Polygons.Shapes
             return Math.Abs(Math.Sqrt(ab) - Math.Sqrt(ac) - Math.Sqrt(cb)) < ShapesConstants.EdgeSelectionRadius;
         }
 
+        private bool locked;
+
         public void MoveTo(PointF point, bool userMove = false)
         {
+            if (locked)
+                return;
+
             if (selectionPoint.HasValue)
             {
-                Lock = true;
                 float dx = point.X - selectionPoint.Value.X;
                 float dy = point.Y - selectionPoint.Value.Y;
                 selectionPoint = point;
 
-                From.Move(dx, dy);
-                To.Move(dx, dy);
-                Lock = false;
+                locked = userMove;
+                To.Locked = true;
+                From.Move(dx, dy, false, true);
+                To.Locked = false;
+                From.Locked = true;
+                To.Move(dx, dy, false, true);
+                From.Locked = false;
+                locked = false;
+                //ConstraintLock = false;
             }
 
         }
@@ -172,13 +184,10 @@ namespace Polygons.Shapes
 
         internal void OnVertexMoveHandler(Vertex vertex)
         {
-            if (Lock)
+            if (ConstraintLock)
                 return;
 
-            foreach (var relation in constraints)
-            {
-                relation.Check(vertex, this);
-            }
+            CheckConstraints(vertex);
         }
 
         public void AddConstraint(IConstraint constraint)
@@ -204,10 +213,13 @@ namespace Polygons.Shapes
         public void AddNewVertex(PointF point)
         {
             this.OnVertexAdd?.Invoke(this, point);
-            
+        }
+
+        public void CheckConstraints(Vertex movedVertex)
+        {
             foreach (var constraint in constraints)
             {
-                constraint.Check(this.From, this);
+                constraint.Check(movedVertex, this);
             }
         }
 

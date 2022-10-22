@@ -20,9 +20,9 @@ namespace Polygons.Constraints
             if (!movedEdge.FixedLength.HasValue)
                 return;
 
-            movedEdge.Lock = true;
+            movedEdge.ConstraintLock = true;
             AdjustEdgeLength(movedEdge, movedEdge.FixedLength.Value, movedVertex);
-            movedEdge.Lock = false;
+            movedEdge.ConstraintLock = false;
         }
 
         public static void AdjustEdgeLength(Edge edge, float fixedLength)

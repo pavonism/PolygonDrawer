@@ -43,11 +43,6 @@ namespace Polygons
             {
                 if (button == MouseButtons.Right)
                     selection?.Delete();
-                else if (Selection == lastSelection)
-                {
-                    var pointAdder = new PointAdder(point);
-                    this.selection?.Visit(pointAdder);
-                }
             }
         }
 
@@ -82,9 +77,9 @@ namespace Polygons
                     Select(point, button);
                     break;
                 case ManagerMode.AddRelation:
-                    if(button == MouseButtons.Left)
+                    if (button == MouseButtons.Left)
                         TryAddRelation(point);
-                    else 
+                    else
                         TryRemoveRelation(point);
                     break;
             }
@@ -92,10 +87,19 @@ namespace Polygons
 
         public void MouseClick(PointF point, MouseButtons button)
         {
+            //TODO: Change to double click
+            if(button == MouseButtons.Middle && TrySelectShape(point))
+            {
+                var pointAdder = new PointAdder(point);
+                this.selection?.Visit(pointAdder);
+            }
         }
 
         public void MouseDrag(PointF from, PointF to, MouseButtons button)
         {
+            if (button != MouseButtons.Left)
+                return;
+
             selection?.MoveTo(to, true);
         }
 

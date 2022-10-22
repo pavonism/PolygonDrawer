@@ -8,7 +8,7 @@ namespace Polygons.Shapes
     public class Vertex : IPolygonShape
     {
         private bool isSelected;
-        private bool locked;
+        public bool Locked { get; set; }
         public float X { get; set; }
         public float Y { get; set; }
         public PointF Location => new(X, Y);
@@ -62,27 +62,29 @@ namespace Polygons.Shapes
 
         public void MoveTo(PointF point, bool userMove = false)
         {
-            if (locked)
+            if (Locked)
                 return;
 
             X = point.X;
             Y = point.Y;
 
-            locked = userMove ? true : false;
+            Locked = userMove;
             OnVertexMove?.Invoke(this);
-            locked = false;
+            Locked = false;
         }
 
-        public void Move(float dx, float dy, bool silentMove = false)
+        public void Move(float dx, float dy, bool silentMove = false, bool userMove = false)
         {
-            if (locked)
+            if (Locked)
                 return;
 
             X += dx;
             Y += dy;
 
+            Locked = userMove;
             if (!silentMove)
                 OnVertexMove?.Invoke(this);
+            Locked = false;
         }
 
         public void Deselect()

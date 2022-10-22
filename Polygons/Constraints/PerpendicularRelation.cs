@@ -12,7 +12,7 @@ namespace Polygons.Constraints
 
         public PerpendicularRelation(Edge brother, Edge sister, object id) : base(brother, sister, id)
         {
-            Check(brother.To, brother);
+            Check(sister.To, sister);
         }
 
         public override void Check(Vertex movedVertex, Edge fixedEdge)
@@ -33,7 +33,7 @@ namespace Polygons.Constraints
             if (Geometrics.Turn(secondVertex.Location, movedVertex.Location, vertexToMove.Location) < 0)
                 rotation = -rotation;
 
-            fixedEdge.Lock = true;
+            fixedEdge.ConstraintLock = true;
 
             // Translate to origin
             var x = movedVertex.X - secondVertex.X;
@@ -53,7 +53,7 @@ namespace Polygons.Constraints
 
             vertexToMove.MoveTo(newPoint);
 
-            fixedEdge.Lock = false;
+            fixedEdge.ConstraintLock = false;
         }
     }
 }
