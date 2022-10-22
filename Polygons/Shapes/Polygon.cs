@@ -142,7 +142,10 @@ namespace Polygons.Shapes
 
         public void Render(Bitmap drawingContext, RenderMode renderMode)
         {
-            foreach (var component in AllComponents)
+            foreach (var component in edges)
+                component.Render(drawingContext, renderMode);
+
+            foreach (var component in vertices)
                 component.Render(drawingContext, renderMode);
 
             if (shapeMode == ShapeMode.Drawing)

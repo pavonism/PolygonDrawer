@@ -58,6 +58,8 @@ namespace PolygonDrawer
             this.toolbar.AddTool(PerpendicularHandler, ConstraintSymbols.Perpendicular, Resources.PerpendicularModeText);
             this.toolbar.AddDivider();
             this.toolbar.AddOption(Resources.BresenhamOptionText, BresenhamOptionChangedHandler);
+            this.toolbar.AddTool(BezierOptionHandler, "B", string.Empty);
+
 
             this.lengthOperator.Hide();
             this.lengthOperator.OnLengthLockChanged += LengthLockChangedHandler;
@@ -65,6 +67,13 @@ namespace PolygonDrawer
             this.toolbar.Controls.Add(this.lengthOperator);
 
             this.selectionVisitor = new SelectionVisitor(lengthOperator);
+        }
+
+        private void BezierOptionHandler(bool obj)
+        {
+            var bezierSetter = new BezierSetter();
+            sketcher.Selection?.Visit(bezierSetter);
+            sketcher.Refresh();
         }
 
         private void InitializeSketcher()

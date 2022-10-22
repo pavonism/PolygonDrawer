@@ -12,6 +12,7 @@ namespace Polygons.Shapes
         public float X { get; set; }
         public float Y { get; set; }
         public PointF Location => new(X, Y);
+        public bool IsConstructionPoint { get; set; }
 
         private readonly List<Edge> edges = new();
 
@@ -32,7 +33,9 @@ namespace Polygons.Shapes
 
             using (var g = Graphics.FromImage(drawingContext))
             {
-                if (isSelected)
+                if (IsConstructionPoint)
+                    g.FillEllipse(Brushes.BlueViolet, rectangle);
+                else if (isSelected)
                     g.FillEllipse(ShapesConstants.SelectionBrush, rectangle);
                 else
                     g.FillEllipse(ShapesConstants.DefaultBrush, rectangle);
