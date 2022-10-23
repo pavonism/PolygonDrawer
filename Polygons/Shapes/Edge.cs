@@ -1,8 +1,8 @@
 ﻿using Polygons.Constraints;
 using Polygons.Visitors;
 using ShapeSketcher;
+using ShapeSketcher.Algorithms;
 using System.Drawing;
-using System.Text;
 
 namespace Polygons.Shapes
 {

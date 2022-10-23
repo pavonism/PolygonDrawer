@@ -1,7 +1,5 @@
 ﻿
-using System.Drawing;
-
-namespace ShapeSketcher
+namespace ShapeSketcher.Algorithms
 {
     public static class Bresenham
     {
