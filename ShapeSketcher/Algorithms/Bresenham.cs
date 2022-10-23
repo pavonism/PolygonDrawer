@@ -1,8 +1,4 @@
 ﻿
-using System.Drawing;
-using System.Numerics;
-using System.Windows.Forms.Design.Behavior;
-
 namespace ShapeSketcher.Algorithms
 {
     public static class Bresenham

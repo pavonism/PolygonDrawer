@@ -1,8 +1,5 @@
 ﻿
 
-using System.CodeDom;
-using System.Runtime.CompilerServices;
-
 namespace ShapeSketcher.Algorithms
 {
     /// <summary>
