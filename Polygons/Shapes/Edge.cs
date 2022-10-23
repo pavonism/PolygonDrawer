@@ -1,8 +1,8 @@
 ﻿using Polygons.Constraints;
 using Polygons.Visitors;
 using ShapeSketcher;
+using ShapeSketcher.Algorithms;
 using System.Drawing;
-using System.Text;
 
 namespace Polygons.Shapes
 {
@@ -25,14 +25,12 @@ namespace Polygons.Shapes
         /// Określa, czy krawędź może być przemieszczana 
         /// </summary>
         private bool locked;
-        /// <summary>
-        /// Długość krawędzi
-        /// </summary>
-
-        private Vertex FirstBezierPoint;
-        private Vertex SecondBezierPoint;
-
+        private ConstructionPoint FirstBezierPoint;
+        private ConstructionPoint SecondBezierPoint;
         private bool isBezier;
+        /// <summary>
+        /// Określa, czy krawędź jest krzywą Beziera
+        /// </summary>
         public bool IsBezier
         {
             get => isBezier;
@@ -40,15 +38,16 @@ namespace Polygons.Shapes
             {
                 if(value && FirstBezierPoint == null && SecondBezierPoint == null)
                 {
-                    FirstBezierPoint = new Vertex(new PointF(From.X + 10, From.Y + 10));
-                    FirstBezierPoint.IsConstructionPoint = true;
-                    SecondBezierPoint = new Vertex(new PointF(To.X + 10, To.Y + 10));
-                    SecondBezierPoint.IsConstructionPoint = true;
+                    FirstBezierPoint = new ConstructionPoint(new PointF(From.X + 10, From.Y + 10));
+                    SecondBezierPoint = new ConstructionPoint(new PointF(To.X + 10, To.Y + 10));
                 }
 
                 isBezier = value;
             }
-        } 
+        }
+        /// <summary>
+        /// Długość krawędzi
+        /// </summary>
         public float Length
         {
             get => (float)Math.Sqrt(Math.Pow(To.X - From.X, 2) + Math.Pow(To.Y - From.Y, 2));

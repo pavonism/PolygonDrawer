@@ -25,8 +25,6 @@ namespace Polygons.Shapes
         /// <summary>
         /// Lista krawędzi, do których należy wierzchołek
         /// </summary>
-        public bool IsConstructionPoint { get; set; }
-
         private readonly List<Edge> edges = new();
         #endregion
 
@@ -45,16 +43,14 @@ namespace Polygons.Shapes
         #endregion
 
         #region IPolygonShape
-        public void Render(Bitmap drawingContext, RenderMode renderMode)
+        public virtual void Render(Bitmap drawingContext, RenderMode renderMode)
         {
             RectangleF rectangle = new RectangleF(X - ShapesConstants.VertexPointRadius, Y - ShapesConstants.VertexPointRadius,
                 2 * ShapesConstants.VertexPointRadius, 2 * ShapesConstants.VertexPointRadius);
 
             using (var g = Graphics.FromImage(drawingContext))
             {
-                if (IsConstructionPoint)
-                    g.FillEllipse(Brushes.BlueViolet, rectangle);
-                else if (isSelected)
+                if (isSelected)
                     g.FillEllipse(ShapesConstants.SelectionBrush, rectangle);
                 else
                     g.FillEllipse(ShapesConstants.DefaultBrush, rectangle);

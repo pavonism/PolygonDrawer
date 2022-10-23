@@ -1,4 +1,4 @@
-﻿
+﻿using ShapeSketcher.Algorithms;
 
 namespace ShapeSketcher
 {

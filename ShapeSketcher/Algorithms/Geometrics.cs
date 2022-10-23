@@ -3,7 +3,7 @@
 using System.CodeDom;
 using System.Runtime.CompilerServices;
 
-namespace ShapeSketcher
+namespace ShapeSketcher.Algorithms
 {
     /// <summary>
     /// Klasa udostępniająca postawowe operacje geometryczne

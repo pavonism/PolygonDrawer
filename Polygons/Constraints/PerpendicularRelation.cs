@@ -1,5 +1,5 @@
 ﻿using Polygons.Shapes;
-using ShapeSketcher;
+using ShapeSketcher.Algorithms;
 using System.Drawing;
 
 namespace Polygons.Constraints

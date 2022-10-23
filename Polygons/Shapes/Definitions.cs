@@ -11,7 +11,7 @@ namespace Polygons.Shapes
     {
         public const string EdgeFixedLengthSymbol = "‡";
         public const float EdgeSelectionRadius = 0.5f;
-        public const float VertexPointRadius = 5;
+        public const float VertexPointRadius = 4;
 
         public static Pen SelectionPen = Pens.Red;
         public static Brush SelectionBrush = Brushes.Red;
@@ -20,5 +20,7 @@ namespace Polygons.Shapes
         public static Color SelectionLineColor = Color.Red;
         public static Pen DefaultPen = Pens.Black;
         public static Brush DefaultBrush = Brushes.Black;
+        public static Brush ConstructionBrush = Brushes.Blue;
+        public static Pen ConstructionPen = Pens.Blue;
     }
 }
