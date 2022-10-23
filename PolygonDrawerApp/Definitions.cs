@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.LinkLabel;
 
 namespace PolygonDrawer
 {
     public static class Resources
     {
-        public const string ProgramTitle = "PolygonDrawer";
+        public const string ProgramTitle = "PolygonDrawer  ▲";
 
-        public const string DrawingModeGlyph = "▲";
-        public const string DrawingModeText = "Tryb rysowania";
-        public const string PerpendicularModeText = "Relacja prostopadłości";
+        public const string PerpendicularModeText = "Relacja prostopadłości. \nAby nadać relację, kliknij LPM na dwie krawędzie.";
         public const string LengthConstraintText = "Ograniczenie długości";
 
         public const string BresenhamOptionText = "Bresenham";
-
+        public const string BresenhamTooltip = "Włącza renderowanie linii za pomocą algorytmu Bresenhama.";
     }
 
     public static class FormConstants

@@ -54,10 +54,9 @@ namespace PolygonDrawer
         {
             this.toolbar.AddLabel(Resources.ProgramTitle);
             this.toolbar.AddDivider();
-            this.toolbar.AddTool(NormalModeHandler, Resources.DrawingModeGlyph, Resources.DrawingModeText);
             this.toolbar.AddTool(PerpendicularHandler, ConstraintSymbols.Perpendicular, Resources.PerpendicularModeText);
             this.toolbar.AddDivider();
-            this.toolbar.AddOption(Resources.BresenhamOptionText, BresenhamOptionChangedHandler);
+            this.toolbar.AddOption(Resources.BresenhamOptionText, BresenhamOptionChangedHandler, Resources.BresenhamTooltip);
 
             this.lengthOperator.Hide();
             this.lengthOperator.OnLengthLockChanged += LengthLockChangedHandler;
@@ -103,12 +102,6 @@ namespace PolygonDrawer
         {
             polygonManager.ManagerMode = newValue ? ManagerMode.AddRelation : ManagerMode.Select;
         }
-
-        private void NormalModeHandler(bool newValue)
-        {
-            polygonManager.ManagerMode = !newValue ? ManagerMode.AddRelation : ManagerMode.Select;
-        }
-
         #endregion
     }
 }

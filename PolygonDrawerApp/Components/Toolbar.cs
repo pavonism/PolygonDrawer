@@ -29,6 +29,7 @@ namespace PolygonDrawerApp.Components
                 Height = FormConstants.MinimumControlSize,
             };
 
+            label.Width = TextRenderer.MeasureText(text, label.Font).Width;
             Controls.Add(label);
         }
 
@@ -59,7 +60,7 @@ namespace PolygonDrawerApp.Components
             return button;
         }
 
-        public CheckBox AddOption(string text, EventHandler onOptionChanged)
+        public CheckBox AddOption(string text, EventHandler onOptionChanged, string? tooltip = null)
         {
             var checkBox = new CheckBox()
             {
@@ -68,6 +69,11 @@ namespace PolygonDrawerApp.Components
                 Text = text,
             };
 
+            if (tooltip != null)
+            {
+                var tooltipControl = new ToolTip();
+                tooltipControl.SetToolTip(checkBox, tooltip);
+            }
 
             checkBox.CheckedChanged += onOptionChanged;
             Controls.Add(checkBox);
