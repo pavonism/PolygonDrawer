@@ -17,6 +17,7 @@ namespace Polygons.Shapes
 
         public int VertexCount => vertices.Count;
         private IEnumerable<IPolygonShape> AllComponents => vertices.Concat<IPolygonShape>(edges);
+        public bool IsFilled { get; set; }
         #endregion
 
         #region Events and Handlers
@@ -191,6 +192,12 @@ namespace Polygons.Shapes
 
             if (shapeMode == ShapeMode.Drawing)
                 drawingEdge?.Render(drawingContext, renderMode);
+
+            if (IsFilled)
+            {
+                return;
+            }
+
         }
 
         public bool TrySelect(PointF point, out IPolygonShape? selectedShape)

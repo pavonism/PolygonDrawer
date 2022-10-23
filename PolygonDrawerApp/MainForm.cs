@@ -55,6 +55,7 @@ namespace PolygonDrawer
             this.toolbar.AddLabel(Resources.ProgramTitle);
             this.toolbar.AddDivider();
             this.toolbar.AddTool(PerpendicularHandler, ConstraintSymbols.Perpendicular, Resources.PerpendicularModeText);
+            this.toolbar.AddTool(FillOptionChanged, "F", string.Empty);
             this.toolbar.AddDivider();
             this.toolbar.AddOption(Resources.BresenhamOptionText, BresenhamOptionChangedHandler, Resources.BresenhamTooltip);
 
@@ -101,6 +102,11 @@ namespace PolygonDrawer
         private void PerpendicularHandler(bool newValue)
         {
             polygonManager.ManagerMode = newValue ? ManagerMode.AddRelation : ManagerMode.Select;
+        }
+
+        private void FillOptionChanged(bool newValue)
+        {
+            sketcher.Selection?.Visit(FillSetter.Instance);
         }
         #endregion
     }
