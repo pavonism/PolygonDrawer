@@ -7,25 +7,44 @@ namespace Polygons.Shapes
 
     public class Vertex : IPolygonShape
     {
+        #region Fields and Properties
+        public float X { get; private set; }
+        public float Y { get; private set; }
+        /// <summary>
+        /// Określa, czy wierzchołek jest zaznaczony
+        /// </summary>
         private bool isSelected;
+        /// <summary>
+        /// Określa, czy wierzchołek może być przemieszczany w ramach sprawdzania ograniczeń krawędzi
+        /// </summary>
         public bool Locked { get; set; }
-        public float X { get; set; }
-        public float Y { get; set; }
+        /// <summary>
+        /// Aktualne współrzędne wierzchołka
+        /// </summary>
         public PointF Location => new(X, Y);
+        /// <summary>
+        /// Lista krawędzi, do których należy wierzchołek
+        /// </summary>
         public bool IsConstructionPoint { get; set; }
 
         private readonly List<Edge> edges = new();
+        #endregion
 
+        #region Events
         public event Action<IPolygonShape> OnShapeDelete;
         public event OnVertexDeleteHandler? OnVertexDelete;
         public event Action<Vertex> OnVertexMove;
+        #endregion
 
+        #region Constructors
         public Vertex(PointF point)
         {
             X = point.X;
             Y = point.Y;
         }
+        #endregion
 
+        #region IPolygonShape
         public void Render(Bitmap drawingContext, RenderMode renderMode)
         {
             RectangleF rectangle = new RectangleF(X - ShapesConstants.VertexPointRadius, Y - ShapesConstants.VertexPointRadius,
@@ -44,11 +63,6 @@ namespace Polygons.Shapes
             }
         }
 
-        public bool HitTest(PointF point)
-        {
-            return Math.Pow(Math.Abs(X - point.X), 2) + Math.Pow(Math.Abs(Y - point.Y), 2) <= Math.Pow(ShapesConstants.VertexPointRadius, 2);
-        }
-
         public bool TrySelect(PointF point, out IPolygonShape? selectedShape)
         {
             if (HitTest(point))
@@ -62,7 +76,6 @@ namespace Polygons.Shapes
             return false;
         }
 
-
         public void MoveTo(PointF point, bool userMove = false)
         {
             if (Locked)
@@ -74,6 +87,28 @@ namespace Polygons.Shapes
             Locked = userMove;
             OnVertexMove?.Invoke(this);
             Locked = false;
+        }
+
+        public void Deselect()
+        {
+            isSelected = false;
+        }
+
+        public void Delete()
+        {
+            OnVertexDelete?.Invoke(this, edges);
+        }
+
+        public void Visit(IPolygonVisitor visitor)
+        {
+            visitor.AcceptVisit(this);
+        }
+        #endregion
+
+        #region Public Methods
+        public bool HitTest(PointF point)
+        {
+            return Math.Pow(Math.Abs(X - point.X), 2) + Math.Pow(Math.Abs(Y - point.Y), 2) <= Math.Pow(ShapesConstants.VertexPointRadius, 2);
         }
 
         public void Move(float dx, float dy, bool silentMove = false, bool userMove = false)
@@ -90,22 +125,19 @@ namespace Polygons.Shapes
             Locked = false;
         }
 
-        public void Deselect()
-        {
-            isSelected = false;
-        }
-
-        public void Delete()
-        {
-            OnVertexDelete?.Invoke(this, edges);
-        }
-
+        /// <summary>
+        /// Łączy wierzhołek z krawędzią. Dzięki temu możliwe jest sprawdzenie ograniczeń krawędzi, gdy wierzchołek się przesuwa
+        /// </summary>
         public void AttachEdge(Edge edge)
         {
             OnVertexMove += edge.OnVertexMoveHandler;
             edges.Add(edge);
         }
 
+        /// <summary>
+        /// Usuwa połączenie wierzchołka z krawędzią. Krawędź nie sprawdza już ograniczeń po przemieszczeniu się wierzchołka
+        /// </summary>
+        /// <param name="edge"></param>
         public void DeattachEdge(Edge edge)
         {
             edges.Remove(edge);
@@ -116,10 +148,6 @@ namespace Polygons.Shapes
         {
             return edges[0] != edge ? edges[0] : edges[1];
         }
-
-        public void Visit(IPolygonVisitor visitor)
-        {
-            visitor.AcceptVisit(this);
-        }
+        #endregion
     }
 }

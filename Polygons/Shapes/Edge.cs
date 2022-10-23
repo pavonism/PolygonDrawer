@@ -8,8 +8,26 @@ namespace Polygons.Shapes
 {
     public class Edge : IPolygonShape
     {
-        private readonly HashSet<IConstraint> constraints = new();
+        #region Fields and Properties
+        /// <summary>
+        /// Zbiór wszystkich ograniczeń nałożonych na krawędź
+        /// </summary>
+        public HashSet<IConstraint> Constraints { get; private set; } = new();
+        /// <summary>
+        /// Punkt, w których zaznaczono krawędź, względem niego odbywają się przesunięcia
+        /// </summary>
         private PointF? selectionPoint;
+        /// <summary>
+        /// Określa, czy krawędź jest zaznaczona. Zaznaczona krawędź podświetla się na czerwono
+        /// </summary>
+        private bool isSelected;
+        /// <summary>
+        /// Określa, czy krawędź może być przemieszczana 
+        /// </summary>
+        private bool locked;
+        /// <summary>
+        /// Długość krawędzi
+        /// </summary>
 
         private Vertex FirstBezierPoint;
         private Vertex SecondBezierPoint;
@@ -31,16 +49,25 @@ namespace Polygons.Shapes
                 isBezier = value;
             }
         } 
-
-        public HashSet<IConstraint> Constraints => constraints;
-
         public float Length
         {
             get => (float)Math.Sqrt(Math.Pow(To.X - From.X, 2) + Math.Pow(To.Y - From.Y, 2));
             set => LengthConstraint.AdjustEdgeLength(this, value);
         }
+        /// <summary>
+        /// Środek krawędzi
+        /// </summary>
+        public PointF Center => new PointF((To.X + From.X) / 2, (To.Y + From.Y) / 2);
+
+        /// <summary>
+        /// Określa, czy powinny być sprawdzane ograniczenia krawędzi
+        /// </summary>
+        public bool ConstraintLock { get; set; }
 
         private float? fixedLength;
+        /// <summary>
+        /// Stała długość krawędzi. Wiąże się z dodaniem ograniczenia na długość
+        /// </summary>
         public float? FixedLength
         {
             get => fixedLength.HasValue ? fixedLength : null;
@@ -54,6 +81,9 @@ namespace Polygons.Shapes
         }
 
         private Vertex from;
+        /// <summary>
+        /// Pierwszy koniec krawędzi
+        /// </summary>
         public Vertex From
         {
             get => from;
@@ -67,6 +97,9 @@ namespace Polygons.Shapes
         }
 
         private Vertex to;
+        /// <summary>
+        /// Drugi koniec krawędzi
+        /// </summary>
         public Vertex To
         {
             get => to;
@@ -78,15 +111,23 @@ namespace Polygons.Shapes
                 CheckConstraints(To);
             }
         }
+        #endregion
 
-        public PointF Center => new PointF((To.X + From.X) / 2, (To.Y + From.Y) / 2);
-
-        private bool isSelected;
-        public bool ConstraintLock { get; set; }
-        public event Action<IPolygonShape> OnShapeDelete;
+        #region Events and Handlers
+        public event Action<IPolygonShape>? OnShapeDelete;
         public event OnEdgeDelete? OnEdgeDelete;
         public event Action<Edge, PointF>? OnVertexAdd;
 
+        internal void OnVertexMoveHandler(Vertex vertex)
+        {
+            if (ConstraintLock)
+                return;
+
+            CheckConstraints(vertex);
+        }
+        #endregion
+
+        #region Constructors
         public Edge(Vertex from, Vertex to)
         {
             From = from;
@@ -98,7 +139,39 @@ namespace Polygons.Shapes
             From = source.From;
             To = source.To;
         }
+        #endregion
 
+        #region Constraints
+        public void AddConstraint(IConstraint constraint)
+        {
+            Constraints.Add(constraint);
+        }
+
+        public void RemoveConstraint(IConstraint constraint)
+        {
+            Constraints.Remove(constraint);
+        }
+
+        public void CheckConstraints(Vertex movedVertex)
+        {
+            foreach (var constraint in Constraints)
+            {
+                constraint.Check(movedVertex, this);
+            }
+        }
+
+        public void ClearConstraints()
+        {
+            foreach (var constraint in Constraints)
+            {
+                constraint.Delete(this);
+            }
+
+            Constraints.Clear();
+        }
+        #endregion
+
+        #region IPolygonShape 
         public void Render(Bitmap drawingContext, RenderMode renderMode)
         {
             if(IsBezier)
@@ -144,7 +217,7 @@ namespace Polygons.Shapes
             {
                 List<string> symbols = new();
 
-                foreach (var constraint in constraints)
+                foreach (var constraint in Constraints)
                 {
                     symbols.Add(constraint.Id + constraint.Symbol);
                 }
@@ -152,17 +225,6 @@ namespace Polygons.Shapes
                 g.DrawString(string.Join(" ", symbols), new Font("Arial", 8), Brushes.Black, Center);
             }
         }
-
-        public bool HitTest(PointF point)
-        {
-            var ab = Math.Pow(To.X - From.X, 2) + Math.Pow(To.Y - From.Y, 2);
-            var ac = Math.Pow(point.X - From.X, 2) + Math.Pow(point.Y - From.Y, 2);
-            var cb = Math.Pow(To.X - point.X, 2) + Math.Pow(To.Y - point.Y, 2);
-
-            return Math.Abs(Math.Sqrt(ab) - Math.Sqrt(ac) - Math.Sqrt(cb)) < ShapesConstants.EdgeSelectionRadius;
-        }
-
-        private bool locked;
 
         public void MoveTo(PointF point, bool userMove = false)
         {
@@ -185,7 +247,6 @@ namespace Polygons.Shapes
                 locked = false;
                 //ConstraintLock = false;
             }
-
         }
 
         public bool TrySelect(PointF point, out IPolygonShape? selectedShape)
@@ -216,32 +277,20 @@ namespace Polygons.Shapes
             OnEdgeDelete?.Invoke(this);
         }
 
-        internal void OnVertexMoveHandler(Vertex vertex)
-        {
-            if (ConstraintLock)
-                return;
-
-            CheckConstraints(vertex);
-        }
-
-        public void AddConstraint(IConstraint constraint)
-        {
-            constraints.Add(constraint);
-        }
-
-        public void RemoveConstraint(IConstraint constraint)
-        {
-            constraints.Remove(constraint);
-        }
-
-        public Vertex GetSecondVertex(Vertex vertex)
-        {
-            return To != vertex ? To : From;
-        }
-
         public void Visit(IPolygonVisitor visitor)
         {
             visitor.AcceptVisit(this);
+        }
+        #endregion
+
+        #region Public Methods
+        public bool HitTest(PointF point)
+        {
+            var ab = Math.Pow(To.X - From.X, 2) + Math.Pow(To.Y - From.Y, 2);
+            var ac = Math.Pow(point.X - From.X, 2) + Math.Pow(point.Y - From.Y, 2);
+            var cb = Math.Pow(To.X - point.X, 2) + Math.Pow(To.Y - point.Y, 2);
+
+            return Math.Abs(Math.Sqrt(ab) - Math.Sqrt(ac) - Math.Sqrt(cb)) < ShapesConstants.EdgeSelectionRadius;
         }
 
         public void AddNewVertex(PointF point)
@@ -249,22 +298,10 @@ namespace Polygons.Shapes
             this.OnVertexAdd?.Invoke(this, point);
         }
 
-        public void CheckConstraints(Vertex movedVertex)
+        public Vertex GetSecondVertex(Vertex vertex)
         {
-            foreach (var constraint in constraints)
-            {
-                constraint.Check(movedVertex, this);
-            }
+            return To != vertex ? To : From;
         }
-
-        public void ClearConstraints()
-        {
-            foreach (var constraint in constraints)
-            {
-                constraint.Delete(this);
-            }
-
-            constraints.Clear();
-        }
+        #endregion
     }
 }

@@ -4,9 +4,9 @@ using ShapeSketcher;
 
 namespace Polygons.Shapes
 {
-
     public class Polygon : IPolygonShape
     {
+        #region Fields and Properties
         private readonly HashSet<Edge> edges = new();
         private readonly HashSet<Vertex> vertices = new();
 
@@ -17,27 +17,15 @@ namespace Polygons.Shapes
 
         public int VertexCount => vertices.Count;
         private IEnumerable<IPolygonShape> AllComponents => vertices.Concat<IPolygonShape>(edges);
+        #endregion
 
-
+        #region Events and Handlers
         public event Action<IPolygonShape>? OnShapeDelete;
 
-        private Vertex CreateVertex(PointF point)
-        {
-            var newVertex = new Vertex(point);
-            newVertex.OnVertexDelete += NewVertex_OnVertexDelete;
-            return newVertex;
-        }
-
-        private Edge CreateEdge(Vertex from, Vertex to)
-        {
-            var newEdge = new Edge(from, to);
-            newEdge.OnEdgeDelete += NewEdge_OnEdgeDelete;
-            newEdge.OnVertexAdd += NewEdge_OnVertexAdd;
-            edges.Add(newEdge);
-            return newEdge;
-        }
-
-        private void NewEdge_OnVertexAdd(Edge edge, PointF point)
+        /// <summary>
+        /// Obsługuje zdarzenie dodania nowego wierzchołka na krawędzi
+        /// </summary>
+        private void VertexAddHandler(Edge edge, PointF point)
         {
             var newVertex = CreateVertex(point);
             vertices.Add(newVertex);
@@ -45,7 +33,11 @@ namespace Polygons.Shapes
             edge.From = newVertex;
         }
 
-        private void NewEdge_OnEdgeDelete(Edge edge)
+        /// <summary>
+        /// Obsługuje zdarzenie usunięcia krawędzi
+        /// </summary>
+        /// <param name="edge"></param>
+        private void EdgeDeleteHandler(Edge edge)
         {
             var newVertex = CreateVertex(edge.Center);
             vertices.Add(newVertex);
@@ -67,7 +59,10 @@ namespace Polygons.Shapes
             vertices.Remove(vertex);
         }
 
-        private void NewVertex_OnVertexDelete(Vertex vertex, List<Edge> edges)
+        /// <summary>
+        /// Obsługuje zdarzenie usunięcia wierzchołka
+        /// </summary>
+        private void VertexDeleteHandler(Vertex vertex, List<Edge> edges)
         {
             if (edges.Count == 2)
             {
@@ -92,6 +87,19 @@ namespace Polygons.Shapes
                     Delete();
             }
         }
+        #endregion
+
+        #region Drawing
+        /// <summary>
+        /// Ustawia pierwszy wierzchołek wielokąta
+        /// </summary>
+        public void SetStart(PointF point)
+        {
+            drawingEdge = CreateEdge(CreateVertex(point), CreateVertex(point));
+            if (firstPoint == null)
+                firstPoint = drawingEdge.From;
+            vertices.Add(drawingEdge.From);
+        }
 
         /// <summary>
         /// Dodaje krawędź do wielokąta.
@@ -110,7 +118,7 @@ namespace Polygons.Shapes
 
         public bool AddEdgeTo(PointF point, out Edge createdEdge)
         {
-            createdEdge = drawingEdge;
+            createdEdge = drawingEdge ?? throw new NullReferenceException();
 
             if (firstPoint != null && firstPoint.HitTest(point))
             {
@@ -127,31 +135,32 @@ namespace Polygons.Shapes
             }
         }
 
+        /// <summary>
+        /// Ustawia koniec bieżąco rysowanej krawędzi
+        /// </summary>
         internal void SetEnd(PointF point)
         {
-            drawingEdge.To.MoveTo(point);
+            drawingEdge?.To.MoveTo(point);
         }
 
-        public void SetStart(PointF point)
+        private Vertex CreateVertex(PointF point)
         {
-            drawingEdge = CreateEdge(CreateVertex(point), CreateVertex(point));
-            if (firstPoint == null)
-                firstPoint = drawingEdge.From;
-            vertices.Add(drawingEdge.From);
+            var newVertex = new Vertex(point);
+            newVertex.OnVertexDelete += VertexDeleteHandler;
+            return newVertex;
         }
 
-        public void Render(Bitmap drawingContext, RenderMode renderMode)
+        private Edge CreateEdge(Vertex from, Vertex to)
         {
-            foreach (var component in edges)
-                component.Render(drawingContext, renderMode);
-
-            foreach (var component in vertices)
-                component.Render(drawingContext, renderMode);
-
-            if (shapeMode == ShapeMode.Drawing)
-                drawingEdge.Render(drawingContext, renderMode);
+            var newEdge = new Edge(from, to);
+            newEdge.OnEdgeDelete += EdgeDeleteHandler;
+            newEdge.OnVertexAdd += VertexAddHandler;
+            edges.Add(newEdge);
+            return newEdge;
         }
+        #endregion
 
+        #region Public Methods
         public void GetExtremePoints(out PointF minPoint, out PointF maxPoint)
         {
             minPoint = new(float.MaxValue, float.MaxValue);
@@ -171,6 +180,20 @@ namespace Polygons.Shapes
             GetExtremePoints(out var minPoint, out var maxPoint);
             RectangleF rect = new RectangleF(minPoint.X, minPoint.Y, maxPoint.X - minPoint.X, maxPoint.Y - minPoint.Y);
             return rect.Contains(point);
+        }
+        #endregion
+
+        #region IPolygonShape
+        public void Render(Bitmap drawingContext, RenderMode renderMode)
+        {
+            foreach (var component in edges)
+                component.Render(drawingContext, renderMode);
+
+            foreach (var component in vertices)
+                component.Render(drawingContext, renderMode);
+
+            if (shapeMode == ShapeMode.Drawing)
+                drawingEdge?.Render(drawingContext, renderMode);
         }
 
         public bool TrySelect(PointF point, out IPolygonShape? selectedShape)
@@ -229,5 +252,6 @@ namespace Polygons.Shapes
         {
             visitor.AcceptVisit(this);
         }
+        #endregion
     }
 }
