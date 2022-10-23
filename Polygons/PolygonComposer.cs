@@ -46,7 +46,11 @@ namespace Polygons
             currentPolygon?.SetEnd(currentPosition);
         }
 
-        public void MouseClick(PointF from, MouseButtons button)
+        public void MouseClick(PointF point, MouseButtons button)
+        {
+        }
+
+        public void MouseDoubleClick(PointF point, MouseButtons button)
         {
         }
 
