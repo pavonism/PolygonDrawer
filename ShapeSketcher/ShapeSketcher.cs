@@ -123,6 +123,23 @@ namespace ShapeSketcher
         private void MouseDownHandler(object? sender, MouseEventArgs e)
         {
             PointF clickPoint = new(e.X, e.Y);
+
+            if(lastClickPoint == clickPoint)
+            {
+                switch (ControlMode)
+                {
+                    case ControlMode.Select:
+                        ShapeManager.MouseDoubleClick(clickPoint, e.Button);
+                        break;
+                    case ControlMode.Drawing:
+                        ShapeComposer.MouseDoubleClick(clickPoint, e.Button);
+                        break;
+                }
+
+                lastClickPoint = PointF.Empty;
+                return;
+            }
+
             isDragged = false;
             isClicked = true;
             lastClickPoint = clickPoint;

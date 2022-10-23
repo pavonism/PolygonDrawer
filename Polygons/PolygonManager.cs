@@ -87,8 +87,11 @@ namespace Polygons
 
         public void MouseClick(PointF point, MouseButtons button)
         {
-            //TODO: Change to double click
-            if(button == MouseButtons.Middle && TrySelectShape(point))
+        }
+
+        public void MouseDoubleClick(PointF point, MouseButtons button)
+        {
+            if (TrySelectShape(point))
             {
                 var pointAdder = new PointAdder(point);
                 this.selection?.Visit(pointAdder);
