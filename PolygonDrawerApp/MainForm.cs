@@ -25,8 +25,7 @@ namespace PolygonDrawer
             ArrangeComponents();
             InitializeForm();
 
-            var DemoScene = new DemoScene();
-            DemoScene.Load(polygonManager);
+            LoadDemo();
         }
 
         private void InitializeForm()
@@ -74,6 +73,14 @@ namespace PolygonDrawer
             sketcher.OnSelectionChanged += ShapeSelectionChangedHandler;
         }
 
+        private void LoadDemo()
+        {
+            sketcher.Clear();
+            var DemoScene = new DemoScene();
+            DemoScene.Load(polygonManager);
+            sketcher.Refresh();
+        }
+
         #region Event Handlers
         private void BresenhamOptionChangedHandler(object? sender, EventArgs e)
         {
@@ -106,11 +113,9 @@ namespace PolygonDrawer
 
         private void LoadDemoHandler(object? sender, EventArgs e)
         {
-            sketcher.Clear();
-            var DemoScene = new DemoScene();
-            DemoScene.Load(polygonManager);
-            sketcher.Refresh();
+            LoadDemo();
         }
+
         private void ClearHandler(object? sender, EventArgs e)
         {
             sketcher.Clear();
