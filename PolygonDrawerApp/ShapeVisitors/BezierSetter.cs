@@ -1,12 +1,7 @@
 ﻿using Polygons.Shapes;
 using Polygons.Visitors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PolygonDrawerApp.ShapeVisitors
+namespace PolygonDrawer.ShapeVisitors
 {
     public class BezierSetter : PolygonVisitor
     {
