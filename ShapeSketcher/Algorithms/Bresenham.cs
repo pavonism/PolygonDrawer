@@ -31,7 +31,8 @@ namespace ShapeSketcher.Algorithms
                 dy = y1 - y2;
             }
             // pierwszy piksel
-            bitmap.SetPixel(x, y, color);
+            if (0 < x && x < bitmap.Width && 0 < y && y < bitmap.Height)
+                bitmap.SetPixel(x, y, color);
             // oś wiodąca OX
             if (dx > dy)
             {
@@ -52,7 +53,9 @@ namespace ShapeSketcher.Algorithms
                         d += dxStraight;
                         x += xi;
                     }
-                    bitmap.SetPixel(x, y, color);
+
+                    if (0 < x && x < bitmap.Width && 0 < y && y < bitmap.Height)
+                        bitmap.SetPixel(x, y, color);
                 }
             }
             // oś wiodąca OY
@@ -75,7 +78,9 @@ namespace ShapeSketcher.Algorithms
                         d += dxStraight;
                         y += yi;
                     }
-                    bitmap.SetPixel(x, y, color);
+
+                    if (0 < x && x < bitmap.Width && 0 < y && y < bitmap.Height)
+                        bitmap.SetPixel(x, y, color);
                 }
             }
         }

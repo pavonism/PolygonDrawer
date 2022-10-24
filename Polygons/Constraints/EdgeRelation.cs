@@ -7,7 +7,7 @@ namespace Polygons.Constraints
         protected readonly Edge brother;
         protected readonly Edge sister;
 
-        private object id;
+        private readonly object id;
         public object Id => id;
         public virtual string Symbol => string.Empty;
 

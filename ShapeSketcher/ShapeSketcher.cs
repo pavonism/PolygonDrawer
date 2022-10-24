@@ -1,16 +1,12 @@
-﻿using ShapeSketcher.Algorithms;
-
+﻿
 namespace ShapeSketcher
 {
     public class ShapeSketcher<ShapeType> : PictureBox where ShapeType : IRenderableShape
     {
-        private const int ClickRadius = 2;
-
         #region Fields and Properties
         private Bitmap drawingContext;
         private IShapeComposer<ShapeType> shapeComposer;
         private IShapeManager<ShapeType> shapeManager;
-        private bool isClicked;
         private bool isDragged;
         private PointF lastClickPoint;
 
@@ -49,7 +45,13 @@ namespace ShapeSketcher
         public Size CanvasSize
         {
             get => drawingContext.Size;
-            set => drawingContext = new Bitmap(value.Width, value.Height);
+            set
+            {
+                drawingContext.Dispose();
+                drawingContext = new Bitmap(value.Width, value.Height);
+                this.Image = drawingContext;
+                Refresh();
+            }
         }
 
         public RenderMode RenderMode { get; set; } = RenderMode.Default;
@@ -62,7 +64,7 @@ namespace ShapeSketcher
 
         public ShapeSketcher(IShapeComposer<ShapeType> shapeComposer, IShapeManager<ShapeType> shapeManager)
         {
-            drawingContext = new Bitmap(ControlConstants.CanvasWidth, ControlConstants.CanvasHeight);
+            drawingContext = new Bitmap(ControlConstants.CanvasDefaultWidth, ControlConstants.CanvasDefaultHeight);
             this.Image = drawingContext;
 
             this.ShapeComposer = shapeComposer;
@@ -76,11 +78,9 @@ namespace ShapeSketcher
         #region Event Handlers
         private void MouseUpHandler(object? sender, MouseEventArgs e)
         {
-            isClicked = false;
             PointF mousePoint = new(e.X, e.Y);
-            PointF diff = lastClickPoint.Minus(mousePoint);
 
-            if (isDragged == false && diff.X <= ClickRadius && diff.Y <= ClickRadius)
+            if (mousePoint.X == lastClickPoint.X && mousePoint.Y == lastClickPoint.Y)
             {
                 switch (ControlMode)
                 {
@@ -98,7 +98,6 @@ namespace ShapeSketcher
 
         private void MouseMoveHandler(object? sender, MouseEventArgs e)
         {
-            isDragged = isClicked;
             PointF mousePoint = new(e.X, e.Y);
 
             switch (ControlMode)
@@ -137,11 +136,9 @@ namespace ShapeSketcher
                 }
 
                 lastClickPoint = PointF.Empty;
-                return;
             }
 
-            isDragged = false;
-            isClicked = true;
+            isDragged = true;
             lastClickPoint = clickPoint;
 
             switch (ControlMode)
@@ -179,6 +176,7 @@ namespace ShapeSketcher
         }
         #endregion
 
+        #region Rendering
         public override void Refresh()
         {
             using (var g = Graphics.FromImage(drawingContext))
@@ -192,6 +190,19 @@ namespace ShapeSketcher
             base.Refresh();
         }
 
+        public void Clear()
+        {
+            shapeManager.Clear();
+
+            using (var g = Graphics.FromImage(drawingContext))
+            {
+                g.Clear(Color.White);
+            }
+
+            Refresh();
+        }
+
+        #endregion
     }
 
 }

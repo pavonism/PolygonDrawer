@@ -1,14 +1,8 @@
 ﻿using Polygons;
 using Polygons.Constraints;
 using Polygons.Shapes;
-using ShapeSketcher;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PolygonDrawerApp.Demo
+namespace PolygonDrawer.Demo
 {
     public class DemoScene : IDemoScene
     {
@@ -17,7 +11,7 @@ namespace PolygonDrawerApp.Demo
             // Pierwszy wielokąt
             Polygon newPolygon = new();
             newPolygon.SetStart(new PointF(100, 100));
-            newPolygon.AddEdgeTo(new PointF(120, 200));
+            newPolygon.AddEdgeTo(new PointF(120, 200), out var constLengthEdge1);
             newPolygon.AddEdgeTo(new PointF(200, 230));
             newPolygon.AddEdgeTo(new PointF(300, 150), out var perpendEdge1);
             newPolygon.AddEdgeTo(new PointF(200, 120));
@@ -28,13 +22,15 @@ namespace PolygonDrawerApp.Demo
             perpendEdge2.Visit(manager.RelationBuilder);
             perpendEdge1.FixedLength = 120;
             perpendEdge1.AddConstraint(LengthConstraint.Instance);
+            constLengthEdge1.FixedLength = 180;
+            constLengthEdge1.AddConstraint(LengthConstraint.Instance);
 
             manager.AddShape(newPolygon);
 
             // Drugi wielokąt
             newPolygon = new();
             newPolygon.SetStart(new PointF(600, 400));
-            newPolygon.AddEdgeTo(new PointF(700, 450));
+            newPolygon.AddEdgeTo(new PointF(700, 450), out var constLengthEdge2);
             newPolygon.AddEdgeTo(new PointF(750, 350), out var perpendEdge4);
             newPolygon.AddEdgeTo(new PointF(550, 300), out var perpendEdge5);
             newPolygon.AddEdgeTo(new PointF(400, 400));
@@ -46,6 +42,8 @@ namespace PolygonDrawerApp.Demo
             perpendEdge5.Visit(manager.RelationBuilder);
             perpendEdge4.FixedLength = 60;
             perpendEdge4.AddConstraint(LengthConstraint.Instance);
+            constLengthEdge2.FixedLength = 150;
+            constLengthEdge2.AddConstraint(LengthConstraint.Instance);
 
             manager.AddShape(newPolygon);
         }

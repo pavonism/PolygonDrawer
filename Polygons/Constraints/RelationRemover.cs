@@ -1,30 +1,38 @@
 ﻿using Polygons.Shapes;
+using Polygons.Visitors;
+using System.Security.Cryptography;
 
 namespace Polygons.Constraints
 {
-    public class RelationBuilder : IConstraintBuilder
+    public class RelationRemover : PolygonVisitor
     {
-        private readonly List<Edge> edges = new List<Edge>();
+        private HashSet<IConstraint>? constraints;
         private int relationCounter = 0;
-        public event Action<IConstraint> OnConstraintCreation;
 
-        public void AcceptVisit(Edge edge)
+        public override void AcceptVisit(Edge edge)
         {
-            edges.Add(edge);
-
-            if(edges.Count == 2)
+            if(this.relationCounter == 0)
             {
-                new PerpendicularRelation(edges[0], edges[1], relationCounter++);
-                edges.Clear();
+                this.constraints = edge.Constraints;
+                relationCounter++;
             }
-        }
+            else if(this.constraints != null)
+            {
+                this.relationCounter = 0;
+                HashSet<IConstraint> toRemove = new();
 
-        public void AcceptVisit(Polygon polygon)
-        {
-        }
+                foreach (var constraint in edge.Constraints)
+                {
+                    if (constraints.Contains(constraint))
+                        toRemove.Add(constraint);
+                }
 
-        public void AcceptVisit(Vertex vertex)
-        {
+                foreach (var constraint in toRemove)
+                {
+                    constraints.Remove(constraint);
+                    edge.Constraints.Remove(constraint);
+                }
+            }
         }
     }
 }

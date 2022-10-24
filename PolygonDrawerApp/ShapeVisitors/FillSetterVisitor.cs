@@ -1,7 +1,7 @@
 ﻿using Polygons.Shapes;
 using Polygons.Visitors;
 
-namespace PolygonDrawerApp.ShapeVisitors
+namespace PolygonDrawer.ShapeVisitors
 {
     public class FillSetter : PolygonVisitor
     {

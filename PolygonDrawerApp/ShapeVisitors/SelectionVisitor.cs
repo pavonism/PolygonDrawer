@@ -1,8 +1,8 @@
-﻿using PolygonDrawerApp.Components;
+﻿using PolygonDrawer.Components;
 using Polygons.Shapes;
 using Polygons.Visitors;
 
-namespace PolygonDrawerApp.ShapeVisitors
+namespace PolygonDrawer.ShapeVisitors
 {
     /// <summary>
     /// Zmienia dostępne narzędzia w zależności od wybranego kształtu
