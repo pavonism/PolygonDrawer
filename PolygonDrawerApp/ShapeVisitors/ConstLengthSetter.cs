@@ -1,9 +1,8 @@
-﻿using PolygonDrawer;
-using Polygons.Constraints;
+﻿using Polygons.Constraints;
 using Polygons.Shapes;
 using Polygons.Visitors;
 
-namespace PolygonDrawerApp.ShapeVisitors
+namespace PolygonDrawer.ShapeVisitors
 {
     /// <summary>
     /// Ustawia ograniczenie na długość krawędzi

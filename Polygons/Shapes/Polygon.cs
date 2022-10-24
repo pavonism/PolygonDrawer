@@ -30,6 +30,7 @@ namespace Polygons.Shapes
             var newVertex = CreateVertex(point);
             vertices.Add(newVertex);
             edges.Add(CreateEdge(edge.From, newVertex));
+            edge.ClearConstraints();
             edge.From = newVertex;
         }
 

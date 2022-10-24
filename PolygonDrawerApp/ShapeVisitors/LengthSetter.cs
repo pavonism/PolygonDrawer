@@ -2,7 +2,7 @@
 using Polygons.Visitors;
 
 
-namespace PolygonDrawerApp.ShapeVisitors
+namespace PolygonDrawer.ShapeVisitors
 {
     /// <summary>
     /// Ustawia długość krawędzi

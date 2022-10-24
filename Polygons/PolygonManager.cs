@@ -33,8 +33,6 @@ namespace Polygons
 
         private void Select(PointF point, MouseButtons button)
         {
-            var lastSelection = Selection;
-
             if (!TrySelectShape(point))
             {
                 selection = null;
@@ -91,7 +89,7 @@ namespace Polygons
 
         public void MouseDoubleClick(PointF point, MouseButtons button)
         {
-            if (TrySelectShape(point))
+            if (ManagerMode == ManagerMode.Select && TrySelectShape(point))
             {
                 var pointAdder = new PointAdder(point);
                 this.selection?.Visit(pointAdder);
@@ -127,6 +125,12 @@ namespace Polygons
         private void Shape_OnShapeDelete(IPolygonShape shape)
         {
             this.shapes.Remove(shape);
+        }
+
+        public void Clear()
+        {
+            this.shapes.Clear();
+            RelationBuilder.Clear();
         }
         #endregion
     }

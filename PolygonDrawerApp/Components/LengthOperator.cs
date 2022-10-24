@@ -1,14 +1,6 @@
-﻿using Microsoft.VisualBasic;
-using PolygonDrawer;
-using PolygonDrawerApp;
-using Polygons.Constraints;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Polygons.Constraints;
 
-namespace PolygonDrawerApp.Components
+namespace PolygonDrawer.Components
 {
     /// <summary>
     /// Komponent na pasku narzędzi imożliwiający ustawienie długość krawędzi
@@ -21,7 +13,7 @@ namespace PolygonDrawerApp.Components
         private const int NumericPaddingLeftRight = 8;
 
         #region Fields and Properties
-        private readonly OptionButton button;
+        private readonly CheckButton button;
         private readonly NumericUpDown numeric = new()
         {
             Width = ControlSize,
@@ -75,7 +67,7 @@ namespace PolygonDrawerApp.Components
             numeric.ValueChanged += NumericValueChanged;
 
             AddDivider();
-            button = AddTool(LockChanged, ConstraintSymbols.ConstLength, Resources.LengthConstraintText);
+            button = AddTool(LockChanged, ConstraintSymbols.ConstLength, Resources.LengthConstraintHint);
             button.Margin = Padding.Empty;
             Controls.Add(numeric);
             AddDivider();

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PolygonDrawer;
-
-namespace PolygonDrawerApp.Components
+﻿
+namespace PolygonDrawer.Components
 {
     /// <summary>
     /// Umożliwia tworzenie paska z opcjami i guzikami
@@ -38,29 +32,40 @@ namespace PolygonDrawerApp.Components
             Controls.Add(new Divider());
         }
 
-        public OptionButton AddTool(Action<bool> handler, string glyph, string toolTip)
+        public void AddButton(EventHandler handler, string glyph, string hint)
         {
-            var tooltip = new ToolTip();
+            var button = new OptionButton() 
+            { 
+                Text = glyph,
+                Margin = new Padding(2, 0, 2, 0),
+            };
 
-            var button = new OptionButton()
+            var tooltip = new ToolTip();
+            tooltip.SetToolTip(button, hint);
+            button.Click += handler;
+            Controls.Add(button);
+        }
+
+        public CheckButton AddTool(Action<bool> handler, string glyph, string hint)
+        {
+
+            var button = new CheckButton()
             {
                 Width = FormConstants.MinimumControlSize,
                 Height = FormConstants.MinimumControlSize,
                 Margin = new Padding(2, 0, 2, 0),
                 Text = glyph,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Font = new Font("Arial", 14, FontStyle.Bold),
             };
 
-            button.FlatAppearance.BorderSize = 0;
             button.OnOptionChanged += handler;
 
-            tooltip.SetToolTip(button, toolTip);
+            var tooltip = new ToolTip();
+            tooltip.SetToolTip(button, hint);
             Controls.Add(button);
             return button;
         }
 
-        public CheckBox AddOption(string text, EventHandler onOptionChanged, string? tooltip = null)
+        public CheckBox AddOption(string text, EventHandler onOptionChanged, string? hint = null)
         {
             var checkBox = new CheckBox()
             {
@@ -69,10 +74,10 @@ namespace PolygonDrawerApp.Components
                 Text = text,
             };
 
-            if (tooltip != null)
+            if (hint != null)
             {
                 var tooltipControl = new ToolTip();
-                tooltipControl.SetToolTip(checkBox, tooltip);
+                tooltipControl.SetToolTip(checkBox, hint);
             }
 
             checkBox.CheckedChanged += onOptionChanged;

@@ -4,7 +4,6 @@ using System.Drawing;
 
 namespace Polygons.Shapes
 {
-
     public class Vertex : IPolygonShape
     {
         #region Fields and Properties
