@@ -1,6 +1,6 @@
 ﻿using Polygons;
 
-namespace PolygonDrawerApp.Demo
+namespace PolygonDrawer.Demo
 {
     /// <summary>
     /// Interfejs do implementacji gotowych scen z wielokątami

@@ -1,7 +1,6 @@
-﻿using Microsoft.VisualBasic;
-using PolygonDrawerApp.Components;
-using PolygonDrawerApp.Demo;
-using PolygonDrawerApp.ShapeVisitors;
+﻿using PolygonDrawer.Components;
+using PolygonDrawer.Demo;
+using PolygonDrawer.ShapeVisitors;
 using Polygons;
 using Polygons.Constraints;
 using Polygons.Shapes;
@@ -54,7 +53,9 @@ namespace PolygonDrawer
         {
             this.toolbar.AddLabel(Resources.ProgramTitle);
             this.toolbar.AddDivider();
-            this.toolbar.AddTool(PerpendicularHandler, ConstraintSymbols.Perpendicular, Resources.PerpendicularModeText);
+            this.toolbar.AddButton(LoadDemoHandler, Resources.ReloadDemoGlyph, Resources.ReloadDemoHint);
+            this.toolbar.AddButton(ClearHandler, Resources.ClearGlyph, Resources.ClearTextHint);
+            this.toolbar.AddTool(PerpendicularHandler, ConstraintSymbols.Perpendicular, Resources.PerpendicularModeHint);
             this.toolbar.AddDivider();
             this.toolbar.AddOption(Resources.BresenhamOptionText, BresenhamOptionChangedHandler, Resources.BresenhamTooltip);
 
@@ -101,6 +102,25 @@ namespace PolygonDrawer
         private void PerpendicularHandler(bool newValue)
         {
             polygonManager.ManagerMode = newValue ? ManagerMode.AddRelation : ManagerMode.Select;
+        }
+
+        private void LoadDemoHandler(object? sender, EventArgs e)
+        {
+            sketcher.Clear();
+            var DemoScene = new DemoScene();
+            DemoScene.Load(polygonManager);
+            sketcher.Refresh();
+        }
+        private void ClearHandler(object? sender, EventArgs e)
+        {
+            sketcher.Clear();
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+
+            sketcher.CanvasSize = this.Size;
         }
         #endregion
     }

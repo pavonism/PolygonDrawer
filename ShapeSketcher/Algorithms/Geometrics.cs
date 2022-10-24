@@ -1,5 +1,4 @@
 ﻿
-
 namespace ShapeSketcher.Algorithms
 {
     /// <summary>

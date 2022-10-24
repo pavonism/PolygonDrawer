@@ -27,9 +27,4 @@ namespace Polygons.Constraints
         /// </summary>
         void Delete(Edge request);
     }
-
-    public interface IConstraintBuilder : IPolygonVisitor
-    {
-        public event Action<IConstraint> OnConstraintCreation;
-    }
 }

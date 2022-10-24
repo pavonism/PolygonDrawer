@@ -3,8 +3,8 @@ namespace ShapeSketcher
 {
     public static class ControlConstants
     {
-        public const int CanvasWidth = 1000;
-        public const int CanvasHeight = 1000;
+        public const int CanvasDefaultWidth = 1000;
+        public const int CanvasDefaultHeight = 1000;
     }
 
     public enum ControlMode
