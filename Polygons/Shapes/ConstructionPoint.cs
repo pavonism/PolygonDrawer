@@ -21,7 +21,7 @@ namespace Polygons.Shapes
 
             using (var g = Graphics.FromImage(drawingContext))
             {
-                g.FillRectangles(Brushes.Blue,  new RectangleF[] { rectangle });
+                g.FillRectangles(ShapesConstants.ConstructionBrush,  new RectangleF[] { rectangle });
             }
         }
     }

@@ -27,6 +27,7 @@ namespace Polygons.Shapes
         private bool locked;
         private ConstructionPoint FirstBezierPoint;
         private ConstructionPoint SecondBezierPoint;
+        private bool bezierConstructionPointsMoved;
         private bool isBezier;
         /// <summary>
         /// Określa, czy krawędź jest krzywą Beziera
@@ -36,6 +37,7 @@ namespace Polygons.Shapes
             get => isBezier;
             set
             {
+                ClearConstraints();
                 float diffX = To.X - From.X;
                 float diffY = To.Y - From.Y;
 
@@ -120,18 +122,21 @@ namespace Polygons.Shapes
         public event OnEdgeDelete? OnEdgeDelete;
         public event Action<Edge, PointF>? OnVertexAdd;
 
-        internal void OnVertexMoveHandler(Vertex vertex, float dx, float dy)
+        internal void OnVertexMoveHandler(Vertex vertex, float dx, float dy, bool silentMove)
         {
             if (ConstraintLock)
                 return;
 
             if(IsBezier)
             {
-                FirstBezierPoint.Move(dx, dy);
-                SecondBezierPoint.Move(dx, dy);
+                if (vertex == From)
+                    FirstBezierPoint.Move(dx, dy);
+                else
+                    SecondBezierPoint.Move(dx, dy);
             }
 
-            CheckConstraints(vertex);
+            if(!silentMove)
+                CheckConstraints(vertex);
         }
         #endregion
 
@@ -187,6 +192,20 @@ namespace Polygons.Shapes
                 Bezier.Draw(new PointF[] { From.Location, FirstBezierPoint.Location, SecondBezierPoint.Location, To.Location }, drawingContext, ShapesConstants.DefaultLineColor);
                 FirstBezierPoint.Render(drawingContext, renderMode);
                 SecondBezierPoint.Render(drawingContext, renderMode);
+
+                var bezzierConstruction = new PointF[]
+                {
+                    From.Location,
+                    FirstBezierPoint.Location,
+                    SecondBezierPoint.Location,
+                    To.Location,
+                };
+
+                using (Graphics g = Graphics.FromImage(drawingContext))
+                {
+                    g.DrawLines(ShapesConstants.ConstructionPen, bezzierConstruction);
+                }
+
                 return;
             }
 

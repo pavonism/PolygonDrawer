@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Polygons.Shapes
 {
@@ -22,6 +23,6 @@ namespace Polygons.Shapes
         public static Pen DefaultPen = Pens.Black;
         public static Brush DefaultBrush = Brushes.Black;
         public static Brush ConstructionBrush = Brushes.Blue;
-        public static Pen ConstructionPen = Pens.Blue;
+        public static Pen ConstructionPen = new Pen(ConstructionBrush) { DashPattern = new float[] { 4.0F, 2.0F, 1.0F, 3.0F } };
     }
 }
