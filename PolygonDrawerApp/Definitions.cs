@@ -14,6 +14,9 @@ namespace PolygonDrawer
 
         public const string BresenhamOptionText = "Bresenham";
         public const string BresenhamTooltip = "Włącza renderowanie linii za pomocą algorytmu Bresenhama.";
+
+        public const string BezierButtonGlyph = "B";
+        public const string BezierButtonHint = "Zamień krawędź w krzywą Beziera.";
     }
 
     public static class FormConstants

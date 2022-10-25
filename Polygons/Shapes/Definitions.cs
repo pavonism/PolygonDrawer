@@ -12,6 +12,7 @@ namespace Polygons.Shapes
         public const string EdgeFixedLengthSymbol = "‡";
         public const float EdgeSelectionRadius = 0.5f;
         public const float VertexPointRadius = 4;
+        public const float BezzierRelativeRatio = 0.25f;
 
         public static Pen SelectionPen = Pens.Red;
         public static Brush SelectionBrush = Brushes.Red;

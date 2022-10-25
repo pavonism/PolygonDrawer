@@ -55,22 +55,24 @@ namespace PolygonDrawer
             this.toolbar.AddButton(LoadDemoHandler, Resources.ReloadDemoGlyph, Resources.ReloadDemoHint);
             this.toolbar.AddButton(ClearHandler, Resources.ClearGlyph, Resources.ClearTextHint);
             this.toolbar.AddTool(PerpendicularHandler, ConstraintSymbols.Perpendicular, Resources.PerpendicularModeHint);
+            var bezierButton = this.toolbar.AddButton(BezierOptionHandler, Resources.BezierButtonGlyph, Resources.BezierButtonHint);
+            bezierButton.Visible = false;
             this.toolbar.AddDivider();
             this.toolbar.AddOption(Resources.BresenhamOptionText, BresenhamOptionChangedHandler, Resources.BresenhamTooltip);
-            this.toolbar.AddTool(BezierOptionHandler, "B", string.Empty);
 
             this.lengthOperator.Hide();
             this.lengthOperator.OnLengthLockChanged += LengthLockChangedHandler;
             this.lengthOperator.OnLengthChanged += LengthChangedHandler;
             this.toolbar.Controls.Add(this.lengthOperator);
 
-            this.selectionVisitor = new SelectionVisitor(lengthOperator);
+            this.selectionVisitor = new SelectionVisitor(lengthOperator, bezierButton);
         }
 
-        private void BezierOptionHandler(bool obj)
+        private void BezierOptionHandler(object? sender, EventArgs e)
         {
             var bezierSetter = new BezierSetter();
             sketcher.Selection?.Visit(bezierSetter);
+            this.selectionVisitor.Reset();
             sketcher.Refresh();
         }
 

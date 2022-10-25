@@ -30,7 +30,7 @@ namespace Polygons.Shapes
         #region Events
         public event Action<IPolygonShape> OnShapeDelete;
         public event OnVertexDeleteHandler? OnVertexDelete;
-        public event Action<Vertex> OnVertexMove;
+        public event Action<Vertex, float, float> OnVertexMove;
         #endregion
 
         #region Constructors
@@ -76,11 +76,13 @@ namespace Polygons.Shapes
             if (Locked)
                 return;
 
+            float dx = point.X - X;
+            float dy = point.Y - Y;
             X = point.X;
             Y = point.Y;
 
             Locked = userMove;
-            OnVertexMove?.Invoke(this);
+            OnVertexMove?.Invoke(this, dx, dy);
             Locked = false;
         }
 
@@ -116,7 +118,7 @@ namespace Polygons.Shapes
 
             Locked = userMove;
             if (!silentMove)
-                OnVertexMove?.Invoke(this);
+                OnVertexMove?.Invoke(this, dx, dy);
             Locked = false;
         }
 

@@ -10,10 +10,12 @@ namespace PolygonDrawer.ShapeVisitors
     public class SelectionVisitor : IPolygonVisitor
     {
         private readonly LengthOperator lengthOperator;
+        private readonly Button bezierButton;
 
-        public SelectionVisitor(LengthOperator lengthOperator)
+        public SelectionVisitor(LengthOperator lengthOperator, Button bezierButton)
         {
             this.lengthOperator = lengthOperator;
+            this.bezierButton = bezierButton;
         }
 
         public void AcceptVisit(Edge edge)
@@ -21,16 +23,24 @@ namespace PolygonDrawer.ShapeVisitors
             lengthOperator.Show();
             lengthOperator.Lock = edge.FixedLength.HasValue;
             lengthOperator.Value = (decimal)edge.Length;
+            if(!edge.IsBezier)
+                bezierButton.Visible = true;
         }
 
         public void AcceptVisit(Polygon polygon)
         {
-            lengthOperator.Hide();
+            Reset();
         }
 
         public void AcceptVisit(Vertex vertex)
         {
+            Reset();
+        }
+
+        public void Reset()
+        {
             lengthOperator.Hide();
+            bezierButton.Visible = false;
         }
     }
 }

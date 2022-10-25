@@ -36,10 +36,13 @@ namespace Polygons.Shapes
             get => isBezier;
             set
             {
+                float diffX = To.X - From.X;
+                float diffY = To.Y - From.Y;
+
                 if(value && FirstBezierPoint == null && SecondBezierPoint == null)
                 {
-                    FirstBezierPoint = new ConstructionPoint(new PointF(From.X + 10, From.Y + 10));
-                    SecondBezierPoint = new ConstructionPoint(new PointF(To.X + 10, To.Y + 10));
+                    FirstBezierPoint = new ConstructionPoint(new PointF(From.X + ShapesConstants.BezzierRelativeRatio * diffX, From.Y + ShapesConstants.BezzierRelativeRatio * diffY));
+                    SecondBezierPoint = new ConstructionPoint(new PointF(To.X - ShapesConstants.BezzierRelativeRatio * diffX, To.Y - ShapesConstants.BezzierRelativeRatio * diffY));
                 }
 
                 isBezier = value;
@@ -117,10 +120,16 @@ namespace Polygons.Shapes
         public event OnEdgeDelete? OnEdgeDelete;
         public event Action<Edge, PointF>? OnVertexAdd;
 
-        internal void OnVertexMoveHandler(Vertex vertex)
+        internal void OnVertexMoveHandler(Vertex vertex, float dx, float dy)
         {
             if (ConstraintLock)
                 return;
+
+            if(IsBezier)
+            {
+                FirstBezierPoint.Move(dx, dy);
+                SecondBezierPoint.Move(dx, dy);
+            }
 
             CheckConstraints(vertex);
         }
@@ -188,9 +197,9 @@ namespace Polygons.Shapes
                     break;
                 case RenderMode.Bresenham:
                     if (isSelected)
-                        XiaolinWu.DrawLine((int)From.X, (int)From.Y, (int)To.X, (int)To.Y, drawingContext, ShapesConstants.SelectionLineColor);
+                        Bresenham.DrawLine((int)From.X, (int)From.Y, (int)To.X, (int)To.Y, drawingContext, ShapesConstants.SelectionLineColor);
                     else
-                        XiaolinWu.DrawLine((int)From.X, (int)From.Y, (int)To.X, (int)To.Y, drawingContext, ShapesConstants.DefaultLineColor);
+                        Bresenham.DrawLine((int)From.X, (int)From.Y, (int)To.X, (int)To.Y, drawingContext, ShapesConstants.DefaultLineColor);
                     break;
             }
 
@@ -201,8 +210,6 @@ namespace Polygons.Shapes
         {
             using (Graphics g = Graphics.FromImage(drawingContext))
             {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
                 if (isSelected)
                     g.DrawLine(ShapesConstants.SelectionPen, From.X, From.Y, To.X, To.Y);
                 else
@@ -244,14 +251,18 @@ namespace Polygons.Shapes
                 To.Move(dx, dy, false, true);
                 From.Locked = false;
                 locked = false;
-                //ConstraintLock = false;
             }
         }
 
         public bool TrySelect(PointF point, out IPolygonShape? selectedShape)
         {
-            if(IsBezier && (FirstBezierPoint.TrySelect(point, out selectedShape) || SecondBezierPoint.TrySelect(point, out selectedShape)))
-                return true;
+            if (IsBezier)
+            {
+                if (FirstBezierPoint.TrySelect(point, out selectedShape) || SecondBezierPoint.TrySelect(point, out selectedShape))
+                    return true;
+                else
+                    return false;
+            }
 
             if (HitTest(point))
             {

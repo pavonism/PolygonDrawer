@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ShapeSketcher.Algorithms
 {
     public class Bezier
@@ -25,7 +20,8 @@ namespace ShapeSketcher.Algorithms
                 int x = (int)(A0.X + t * (A1.X + t * (A2.X + (A3.X * t))));
                 int y = (int)(A0.Y + t * (A1.Y + t * (A2.Y + (A3.Y * t))));
 
-                bitmap.SetPixel(x, y, color);
+                if (0 < x && x < bitmap.Width && 0 < y && y < bitmap.Height)
+                    bitmap.SetPixel(x, y, color);
             }
         }
     }

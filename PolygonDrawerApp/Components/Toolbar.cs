@@ -32,7 +32,7 @@ namespace PolygonDrawer.Components
             Controls.Add(new Divider());
         }
 
-        public void AddButton(EventHandler handler, string glyph, string hint)
+        public Button AddButton(EventHandler handler, string glyph, string hint)
         {
             var button = new OptionButton() 
             { 
@@ -44,6 +44,8 @@ namespace PolygonDrawer.Components
             tooltip.SetToolTip(button, hint);
             button.Click += handler;
             Controls.Add(button);
+
+            return button;
         }
 
         public CheckButton AddTool(Action<bool> handler, string glyph, string hint)
